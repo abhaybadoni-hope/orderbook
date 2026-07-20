@@ -23,3 +23,6 @@ target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 enable_testing()
 add_test(NAME orderbook_tests COMMAND tests)
+
+add_executable(benchmark src/benchmark.cpp)
+target_include_directories(benchmark PRIVATE include)
