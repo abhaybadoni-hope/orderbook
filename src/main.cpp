@@ -1,17 +1,19 @@
 #include <iostream>
 #include "order.hpp"
-#include "price_level.hpp"
+#include "order_book.hpp"
 
 int main() {
-    PriceLevel level{10150, {}};
+    OrderBook book;
 
-    level.orders.push_back(Order{1, Side::Buy, 10150, 100, 1});
-    level.orders.push_back(Order{2, Side::Buy, 10150, 50, 2});
+    book.add_resting(Order{1, Side::Buy,  10100, 10, 1});  // buy @ 101.00
+    book.add_resting(Order{2, Side::Buy,  10050, 20, 2});  // buy @ 100.50
+    book.add_resting(Order{3, Side::Sell, 10200, 15, 3});  // sell @ 102.00
+    book.add_resting(Order{4, Side::Sell, 10250,  5, 4});  // sell @ 102.50
 
-    std::cout << "Price " << level.price
-              << " has " << level.orders.size() << " orders"
-              << ", total qty " << level.total_quantity() << "\n";
+    if (auto bid = book.best_bid())
+        std::cout << "Best bid: " << *bid << "\n";
+    if (auto ask = book.best_ask())
+        std::cout << "Best ask: " << *ask << "\n";
 
-    std::cout << "First to fill: Order #" << level.orders.front().id << "\n";
     return 0;
 }
