@@ -2,18 +2,24 @@
 #include "order.hpp"
 #include "order_book.hpp"
 
+void print_trades(const std::vector<Trade>& trades) {
+    for (const auto& t : trades)
+        std::cout << "  TRADE: buy#" << t.buy_id << " x sell#" << t.sell_id
+                  << " qty " << t.quantity << " @ " << t.price << "\n";
+}
+
 int main() {
     OrderBook book;
 
-    book.add_resting(Order{1, Side::Buy,  10100, 10, 1});  // buy @ 101.00
-    book.add_resting(Order{2, Side::Buy,  10050, 20, 2});  // buy @ 100.50
-    book.add_resting(Order{3, Side::Sell, 10200, 15, 3});  // sell @ 102.00
-    book.add_resting(Order{4, Side::Sell, 10250,  5, 4});  // sell @ 102.50
+    book.submit(Order{1, Side::Sell, 10200, 10, 1});
+    book.submit(Order{2, Side::Sell, 10250,  5, 2});
 
-    if (auto bid = book.best_bid())
-        std::cout << "Best bid: " << *bid << "\n";
-    if (auto ask = book.best_ask())
-        std::cout << "Best ask: " << *ask << "\n";
+    std::cout << "Buy 12 @ 10250:\n";
+    auto trades = book.submit(Order{3, Side::Buy, 10250, 12, 3});
+    print_trades(trades);
 
+    std::cout << "Best ask now: "
+              << (book.best_ask() ? std::to_string(*book.best_ask()) : "none")
+              << "\n";
     return 0;
 }
